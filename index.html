@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Furniture Shop 16:9</title>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #ff5f6d, #ffc371, #47caff);
+        background-size: 300% 300%;
+        animation: bg 6s ease infinite;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    @keyframes bg {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .screen {
+        width: 960px;
+        height: 540px; /* 16:9 */
+        background: white;
+        border-radius: 25px;
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .grid {
+        flex: 1;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 10px;
+        padding: 15px;
+    }
+
+    .item {
+        border-radius: 15px;
+        overflow: hidden;
+        cursor: pointer;
+        background: #f2f2f2;
+        position: relative;
+        height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .item img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+    }
+
+    .fallback {
+        font-size: 45px;
+    }
+
+    .cart-btn {
+        position: absolute;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: black;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 30px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .cart {
+        display: none;
+        flex: 1;
+        text-align: center;
+        padding-top: 80px;
+    }
+
+    input {
+        margin-top: 20px;
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        width: 250px;
+        font-size: 16px;
+    }
+
+    .confirm {
+        margin-top: 20px;
+        font-size: 40px;
+        cursor: pointer;
+    }
+
+    .flying {
+        position: fixed;
+        width: 80px;
+        height: 80px;
+        border-radius: 10px;
+        z-index: 999;
+        transition: all 0.8s cubic-bezier(.2,.8,.2,1);
+        pointer-events: none;
+    }
+</style>
+</head>
+<body>
+
+<div class="screen">
+
+    <div id="shop">
+
+        <div class="grid">
+
+            <div class="item"><img src="https://images.unsplash.com/photo-1618220179428-22790b461013"></div> <!-- mirror -->
+            <div class="item"><img src="https://images.unsplash.com/photo-1616627451515-cbc80e5ece35"></div> <!-- wardrobe -->
+            <div class="item"><img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7"></div> <!-- sofa -->
+            <div class="item"><img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511"></div> <!-- bed -->
+            <div class="item"><img src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4"></div> <!-- lamp -->
+
+            <div class="item"><img src="https://images.unsplash.com/photo-1549880338-65ddcdfd017b"></div> <!-- painting -->
+            <div class="item"><img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85"></div> <!-- curtains -->
+
+            <!-- BROKEN IMAGE -->
+            <div class="item">
+                <img src="https://this-image-does-not-exist-404.com/broken.jpg"
+                     onerror="this.style.display='none'; this.parentNode.innerHTML='<div class=&quot;fallback&quot;>🪞</div>';">
+            </div>
+
+            <div class="item"><img src="https://images.unsplash.com/photo-1615874959474-d609969a20ed"></div> <!-- table -->
+            <div class="item"><img src="https://images.unsplash.com/photo-1567016432779-094069958ea5"></div> <!-- shelf -->
+
+        </div>
+
+        <div class="cart-btn" id="cartBtn" onclick="openCart()">🛒 CART</div>
+    </div>
+
+    <div id="cart" class="cart">
+        <h2>Your Cart</h2>
+        <input type="text" placeholder="Enter your name">
+        <div class="confirm" onclick="done()">✅</div>
+    </div>
+
+</div>
+
+<script>
+const items = document.querySelectorAll('.item');
+
+items.forEach(item => {
+    item.addEventListener('click', () => {
+
+        const rect = item.getBoundingClientRect();
+        const cart = document.getElementById('cartBtn').getBoundingClientRect();
+
+        const clone = item.cloneNode(true);
+        clone.classList.add('flying');
+
+        clone.style.left = rect.left + 'px';
+        clone.style.top = rect.top + 'px';
+
+        document.body.appendChild(clone);
+
+        setTimeout(() => {
+            clone.style.left = cart.left + 'px';
+            clone.style.top = cart.top + 'px';
+            clone.style.opacity = '0';
+            clone.style.transform = 'scale(0.2)';
+        }, 10);
+
+        setTimeout(() => clone.remove(), 800);
+    });
+});
+
+function openCart() {
+    document.getElementById("shop").style.display = "none";
+    document.getElementById("cart").style.display = "block";
+}
+
+function done() {
+    document.querySelector(".screen").innerHTML =
+        "<h1 style='text-align:center;margin-top:200px;'>Order Completed ❤️</h1>";
+}
+</script>
+
+</body>
+</html>
